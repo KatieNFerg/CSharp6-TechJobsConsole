@@ -1,10 +1,11 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace TechJobsConsoleAutograded6
 {
-	public class JobData
-	{
+    public class JobData
+    {
         static List<Dictionary<string, string>> AllJobs = new List<Dictionary<string, string>>();
         static bool IsDataLoaded = false;
 
@@ -16,7 +17,7 @@ namespace TechJobsConsoleAutograded6
 
         /*
          * Returns a list of all values contained in a given column,
-         * without duplicates. 
+         * without duplicates.
          */
         public static List<string> FindAll(string column)
         {
@@ -47,7 +48,23 @@ namespace TechJobsConsoleAutograded6
             // load data, if not already loaded
             LoadData();
 
-            return null;
+            List<Dictionary<string, string>> jobs = new List<Dictionary<string, string>>();
+            foreach (Dictionary<string, string> row in AllJobs)
+            {
+                foreach (string key in row.Keys)
+                {
+                    string aValue = row[key];
+                    if (aValue.ToLower().Contains(value.ToLower()))
+                    {
+                        if (!jobs.Contains(row))
+                        {
+                            jobs.Add(row);
+                        }
+                    }
+                }
+            }
+                    // Console.WriteLine(aValue);
+            return jobs;
         }
 
         /**
@@ -57,7 +74,10 @@ namespace TechJobsConsoleAutograded6
          * For example, searching for employer "Enterprise" will include results
          * with "Enterprise Holdings, Inc".
          */
-        public static List<Dictionary<string, string>> FindByColumnAndValue(string column, string value)
+        public static List<Dictionary<string, string>> FindByColumnAndValue(
+            string column,
+            string value
+        )
         {
             // load data, if not already loaded
             LoadData();
@@ -68,9 +88,8 @@ namespace TechJobsConsoleAutograded6
             {
                 string aValue = row[column];
 
-
                 //TODO: Make search case-insensitive
-                if (aValue.Contains(value))
+                if (aValue.ToLower().Contains(value.ToLower()))
                 {
                     jobs.Add(row);
                 }
@@ -84,7 +103,6 @@ namespace TechJobsConsoleAutograded6
          */
         private static void LoadData()
         {
-
             if (IsDataLoaded)
             {
                 return;
@@ -126,7 +144,11 @@ namespace TechJobsConsoleAutograded6
         /*
          * Parse a single line of a CSV file into a string array
          */
-        private static string[] CSVRowToStringArray(string row, char fieldSeparator = ',', char stringSeparator = '\"')
+        private static string[] CSVRowToStringArray(
+            string row,
+            char fieldSeparator = ',',
+            char stringSeparator = '\"'
+        )
         {
             bool isBetweenQuotes = false;
             StringBuilder valueBuilder = new StringBuilder();
@@ -161,4 +183,3 @@ namespace TechJobsConsoleAutograded6
         }
     }
 }
-
